@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Adicionar saldo</title>
+</head>
+<body>
+
+<h2>Adicionar saldo</h2>
+
+<button onclick="gerarPix()">Pagar com Pix</button>
+
+<div id="modal" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#00000090;
+">
+
+  <div style="
+  background:#fff;
+  max-width:400px;
+  margin:10% auto;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+  ">
+
+    <h3>Pagamento Pix</h3>
+
+    <img id="qrcode" style="width:100%">
+
+    <textarea id="copia" style="width:100%;height:90px"></textarea>
+
+    <br><br>
+
+    <button onclick="copiar()">Copiar Pix</button>
+    <button onclick="fechar()">Fechar</button>
+
+  </div>
+</div>
+
+<script>
+async function gerarPix() {
+  const r = await fetch("/.netlify/functions/pix");
+  const d = await r.json();
+
+  document.getElementById("qrcode").src =
+    "data:image/png;base64," + d.qr;
+
+  document.getElementById("copia").value = d.copia;
+
+  document.getElementById("modal").style.display = "block";
+}
+
+function copiar() {
+  navigator.clipboard.writeText(
+    document.getElementById("copia").value
+  );
+  alert("Pix copiado!");
+}
+
+function fechar() {
+  document.getElementById("modal").style.display = "none";
+}
+</script>
+
+</body>
+</html>
